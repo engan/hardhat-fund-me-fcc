@@ -1,0 +1,208 @@
+// WSL installed (Linux environment)
+// The files are now stored in Windows here: \\wsl$\Ubuntu\home\chieftec 
+
+// VSCode: Ctrl + Shift + P
+// VSCode Command Palette: WSL: New WSL window
+
+// If "VS Code Server for WSL closed unexpectedly"
+// Open Powershell (not as admin)
+// wsl --shutdown
+// wsl
+
+
+chieftec@Chieftec-PC:~$ 
+cd hh-fcc
+mkdir hardhat-fund-me-fcc
+cd hardhat-fund-me-fcc
+code .
+    New Visual Studio Code started
+    VScode: View Teminal
+
+yarn add --dev hardhat@2.9.3    
+yarn hardhat   
+
+// Deleted .eslintignore and .eslintrc.js - ESLint: https://eslint.org/
+// Deleted .npmignore
+
+yarn solhint contracts/*.sol
+
+// Added file .prettierrc
+{
+//     "tabWidth": 4,
+//     "useTabs": false,
+//     "semi": false,
+//     "singleQuote": false
+// }
+
+// Copied file FundMe.sol and PriceConverter.sol from Lesson 4
+// https://github.com/PatrickAlphaC/fund-me-fcc
+
+// Change in hardhat.congig.js:
+// module.exports = {
+//   solidity: "0.8.8",
+// };
+
+// Because of import error in FundMe.sol and PriceConverter.sol:
+// import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+yarn add --dev @chainlink/contracts
+// new folders with files created: artifacts and cashe 
+yarn hardhat compile
+
+// hardhat-deploy package: require("hardhat-deploy")
+// https://www.npmjs.com/package/hardhat-deploy
+yarn add --dev hardhat-deploy
+
+// Deleted scripts/deploy.js
+mkdir deploy
+
+// hardhat-deploy-ethers with an alternative installation
+yarn add --dev @nomiclabs/hardhat-ethers@npm:hardhat-deploy-ethers ethers
+
+// Added file deploy/01-deploy-fund-me.js
+// function deployFunc() {
+//     console.log("Hi!")
+// }
+// module.exports.default = deployFunc
+yarn hardhat deploy
+
+// https://stackoverflow.com/questions/2665812/what-is-mocking
+// What is Mocking?
+// Mocking is primarily used in unit testing. An object under test may have dependencies on other 
+// (complex) objects. To isolate the behaviour of the object you want to test you replace 
+// the other objects by mocks that simulate the behaviour of the real objects. 
+// This is useful if the real objects are impractical to incorporate into the unit test.
+// In short, mocking is creating objects that simulate the behaviour of real objects.
+
+// Goerli ETH / USD Address
+// https://docs.chain.link/docs/ethereum-addresses/
+
+// Price Feed Contract Addresses
+// https://docs.chain.link/data-feeds/price-feeds/addresses?network=polygon
+
+yarn hardhat deploy --network goerli
+
+// new folders with files created: artifacts and cashe 
+yarn hardhat compile
+
+// Deploy mocks (local like hardhat and localhost - not testnets)
+yarn hardhat deploy --tags mocks
+
+// Spin up a new local blockchain node and all deployed contracts
+yarn hardhat node
+
+// Deploy only on goerli test network
+yarn hardhat deploy --network goerli
+    Nothing to compile
+    deploying "FundMe" (tx: 0xf350f3e1df62f4dee061bea46a3ef6d95d6e1b17794596613f9510b5078977c4)...: deployed at 0xE8FB9B5b7D3a17d3C4d62Be877DE86755F2013b0 with 901264 gas
+    Verifying contract...
+    Nothing to compile
+    Compiling 1 file with 0.8.8
+    Successfully submitted source code for contract
+    contracts/FundMe.sol:FundMe at 0xE8FB9B5b7D3a17d3C4d62Be877DE86755F2013b0
+    for verification on Etherscan. Waiting for verification result...
+
+    Successfully verified contract FundMe on Etherscan.
+    https://goerli.etherscan.io/address/0xE8FB9B5b7D3a17d3C4d62Be877DE86755F2013b0#code
+    ---------------------------------------------------------------
+    Done in 106.13s.
+
+
+// EXTRA (99-deploy-storage-fun.js - not working at the moment):
+// https://github.com/PatrickAlphaC/hardhat-fund-me-fcc/blob/main/deploy/99-deploy-storage-fun.js 
+// Described in video: https://www.youtube.com/watch?v=gyMwXuJrbJQ&t=42688s    
+
+
+// Solidity style guide: https://docs.soliditylang.org/en/v0.8.16/style-guide.html#order-of-layout
+// Layout contract elements in the following order:
+// - Pragma statements
+// - Import statements
+// - Error codes (not in style guide)
+// - Interfaces
+// - Libraries
+// - Contracts
+    // Inside each contract, library or interface, use the following order:
+    // - Type declarations
+    // - State variables
+    // - Events
+    // - Modifiers
+    // - Functions
+        // Inside each function, use the following order: 
+        // - constructor
+        // - receive
+        // - fallback
+        // - external
+        // - public
+        // - internal
+        // - private
+        // - view / pure
+
+// Ethereum Natural Language Specification Format (NatSpec)
+// https://docs.soliditylang.org/en/v0.8.16/natspec-format.html
+
+// generate the User Documentation and Developer Documentation for FundMe.sol using:
+solc --userdoc --devdoc FundMe.sol
+
+
+// To types of testing:
+// - UNIT testing are done locally
+//   - local hardhat
+//   - forked hardhat   
+//
+// - STAGING test are done on a testnet (LAST STOP before deploy!!)
+// chieftec@Chieftec-PC:~/hh-fcc/hardhat-fund-me-fcc/test$
+mkdir staging
+mkdir unit
+
+
+// UNIT test (FundMe.test.js)
+chieftec@Chieftec-PC:~/hh-fcc/hardhat-fund-me-fcc$ 
+yarn hardhat test
+
+// find words within: it("Updates the amount funded data structure", async () =>
+yarn hardhat test --grep "amount funded"
+
+
+// https://hardhat.org/tutorial/debugging-with-hardhat-network
+// Solidity console.log - Debugging with Hardhat Network
+// In .sol file: import "hardhat/console.sol";
+// Add some console.log() calls to the transfer() function as if you were using it in JavaScript
+// In terminal: yarn harhat test
+
+// hardhat-gas-reporter - https://www.npmjs.com/package/hardhat-gas-reporter
+// require("hardhat-gas-reporter")
+// hardhat.config.js: gasReporter{enabled: true, ...}
+yarn add hardhat-gas-reporter
+
+// Get the gas price down by tweaking state variables in FundMe.sol
+// https://docs.soliditylang.org/en/v0.8.17/internals/layout_in_storage.html
+
+// Ethereum VM (EVM) Opcodes and Instruction Reference
+// 0x54	    SLOAD	    Load word from storage	-	800
+// 0x55	    SSTORE	    Save word to storage	-	20000**
+// https://github.com/crytic/evm-opcodes
+
+
+// STAGING test (FundMe.staging.test.js)
+chieftec@Chieftec-PC:~/hh-fcc/hardhat-fund-me-fcc$ 
+yarn hardhat deploy --network goerli
+yarn hardhat test --network goerli
+
+yarn hardhat node
+
+// IF ERROR WITH yarn hardhat node - DO THIS!!
+// Delete folder artifacts and clear cache
+yarn hardhat clean
+// Create cache and artifacts folder and files
+yarn hardhat compile
+
+// START NEW BASH TERMINAL
+yarn hardhat run scripts/fund.js --network localhost
+yarn hardhat run scripts/withdraw.js --network localhost
+
+
+// README file template - https://github.com/othneildrew/Best-README-Template
+
+
+// github - repository created: https://github.com/engan/hardhat-fund-me-fcc
+git init
+git add .
