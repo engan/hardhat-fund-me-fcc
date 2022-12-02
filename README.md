@@ -1,5 +1,7 @@
 # Advanced Sample Hardhat Project
 
+![MetamaskGoerli](https://user-images.githubusercontent.com/18284412/205310585-ed115ba9-59bb-4ee4-a379-f27758cfb65c.PNG)
+
 This project demonstrates an advanced Hardhat use case, integrating other tools commonly used alongside Hardhat in the ecosystem.
 
 The project comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts. It also comes with a variety of other tools, preconfigured to work with the project code.
